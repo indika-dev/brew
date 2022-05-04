@@ -3,8 +3,7 @@
 # Fail fast with concise message when not using bash
 # Single brackets is needed here for POSIX compatibility
 # shellcheck disable=SC2292
-if [ -z "${BASH_VERSION:-}" ]
-then
+if [ -z "${BASH_VERSION:-}" ]; then
   echo "Error: Bash is required to run brew." >&2
   exit 1
 fi
@@ -12,8 +11,7 @@ fi
 set +o posix # as we are using bash now
 
 # Fail fast with concise message when cwd does not exist
-if ! [[ -d "${PWD}" ]]
-then
+if ! [[ -d "${PWD}" ]]; then
   echo "Error: The current working directory doesn't exist, cannot proceed." >&2
   exit 1
 fi
@@ -32,8 +30,7 @@ symlink_target_directory() {
 
 # Enable and use default Bash builtins rather than user-defined functions
 builtin enable compgen unset
-for cmd in $(builtin compgen -A builtin)
-do
+for cmd in $(builtin compgen -A builtin); do
   builtin unset -f "${cmd}"
   builtin enable "${cmd}"
 done
@@ -42,29 +39,26 @@ unset cmd
 BREW_FILE_DIRECTORY="$(quiet_cd "${0%/*}/" && pwd -P)"
 HOMEBREW_BREW_FILE="${BREW_FILE_DIRECTORY%/}/${0##*/}"
 HOMEBREW_PREFIX="${HOMEBREW_BREW_FILE%/*/*}"
+IS_OSTREE_OS="$([[ -n "$(cat /etc/os-release | grep OSTREE_VERSION)" ]] && echo true || echo false)"
 
 # Default to / prefix if unset or the bin/brew file.
-if [[ -z "${HOMEBREW_PREFIX}" || "${HOMEBREW_PREFIX}" = "${HOMEBREW_BREW_FILE}" ]]
-then
+if [[ -z "${HOMEBREW_PREFIX}" || "${HOMEBREW_PREFIX}" = "${HOMEBREW_BREW_FILE}" ]]; then
   HOMEBREW_PREFIX="/"
 fi
 
 HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}"
 
 # Resolve the bin/brew symlink to find Homebrew's repository
-if [[ -L "${HOMEBREW_BREW_FILE}" ]]
-then
+if [[ -L "${HOMEBREW_BREW_FILE}" ]]; then
   BREW_FILE_DIRECTORY="$(symlink_target_directory "${HOMEBREW_BREW_FILE}" "${BREW_FILE_DIRECTORY}")"
   HOMEBREW_REPOSITORY="${BREW_FILE_DIRECTORY%/*}"
 fi
 
 # Try to find a /usr/local HOMEBREW_PREFIX where possible (for bottles)
-if [[ -L "/usr/local/bin/brew" && ! -L "${HOMEBREW_PREFIX}/Cellar" ]]
-then
+if [[ -L "/usr/local/bin/brew" && ! -L "${HOMEBREW_PREFIX}/Cellar" ]]; then
   USR_LOCAL_BREW_FILE_DIRECTORY="$(symlink_target_directory "/usr/local/bin/brew" "/usr/local/bin")"
   USR_LOCAL_HOMEBREW_REPOSITORY="${USR_LOCAL_BREW_FILE_DIRECTORY%/*}"
-  if [[ "${HOMEBREW_REPOSITORY}" = "${USR_LOCAL_HOMEBREW_REPOSITORY}" ]]
-  then
+  if [[ "${HOMEBREW_REPOSITORY}" = "${USR_LOCAL_HOMEBREW_REPOSITORY}" ]]; then
     HOMEBREW_PREFIX="/usr/local"
   fi
 fi
@@ -75,8 +69,7 @@ HOMEBREW_LIBRARY="${HOMEBREW_REPOSITORY}/Library"
 
 # Copy and export all HOMEBREW_* variables previously mentioned in
 # manpage or used elsewhere by Homebrew.
-for VAR in BROWSER DISPLAY EDITOR NO_COLOR PATH TMUX DBUS_SESSION_BUS_ADDRESS
-do
+for VAR in BROWSER DISPLAY EDITOR NO_COLOR PATH TMUX DBUS_SESSION_BUS_ADDRESS; do
   # Skip if variable value is empty.
   [[ -z "${!VAR}" ]] && continue
 
@@ -91,12 +84,12 @@ export HOMEBREW_BREW_FILE
 export HOMEBREW_PREFIX
 export HOMEBREW_REPOSITORY
 export HOMEBREW_LIBRARY
+export IS_OSTREE_OS
 
 # set from user environment
 # shellcheck disable=SC2154
 # Use VISUAL if HOMEBREW_EDITOR and EDITOR are unset.
-if [[ -z "${HOMEBREW_EDITOR}" && -n "${VISUAL}" ]]
-then
+if [[ -z "${HOMEBREW_EDITOR}" && -n "${VISUAL}" ]]; then
   export HOMEBREW_EDITOR="${VISUAL}"
 fi
 
@@ -104,15 +97,13 @@ fi
 # shellcheck disable=SC2154
 # Set CI variable for Azure Pipelines and Jenkins
 # (Set by default on GitHub Actions, Circle and Travis CI)
-if [[ -z "${CI}" ]] && [[ -n "${TF_BUILD}" || -n "${JENKINS_HOME}" ]]
-then
+if [[ -z "${CI}" ]] && [[ -n "${TF_BUILD}" || -n "${JENKINS_HOME}" ]]; then
   export CI="1"
 fi
 
 # set from user environment
 # shellcheck disable=SC2154
-if [[ -z "${HOMEBREW_NO_ENV_FILTERING}" ]]
-then
+if [[ -z "${HOMEBREW_NO_ENV_FILTERING}" ]]; then
   PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 
   FILTERED_ENV=()
@@ -121,12 +112,12 @@ then
     http_proxy https_proxy ftp_proxy no_proxy all_proxy HTTPS_PROXY FTP_PROXY ALL_PROXY
     GITHUB_ACTIONS GITHUB_WORKSPACE GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED
     GITHUB_REPOSITORY GITHUB_RUN_ID GITHUB_SHA GITHUB_HEAD_REF GITHUB_BASE_REF GITHUB_REF
+    IS_OSTREE_OS
     # TODO: remove the below after a few days
     GITHUB_ACTIONS_HOMEBREW_MACOS_SELF_HOSTED
   )
   # Filter all but the specific variables.
-  for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"
-  do
+  for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"; do
     # Skip if variable value is empty.
     [[ -z "${!VAR}" ]] && continue
 
