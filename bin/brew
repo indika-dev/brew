@@ -32,7 +32,8 @@ symlink_target_directory() {
 
 # Enable and use default Bash builtins rather than user-defined functions
 builtin enable compgen unset
-for cmd in $(builtin compgen -A builtin); do
+for cmd in $(builtin compgen -A builtin)
+do
   builtin unset -f "${cmd}"
   builtin enable "${cmd}"
 done
@@ -44,7 +45,7 @@ HOMEBREW_PREFIX="${HOMEBREW_BREW_FILE%/*/*}"
 IS_OSTREE_OS="$([[ -n "$(cat /etc/os-release | grep OSTREE_VERSION)" ]] && echo true || echo false)"
 
 # Default to / prefix if unset or the bin/brew file.
-if [[ -z "${HOMEBREW_PREFIX}" || "${HOMEBREW_PREFIX}" = "${HOMEBREW_BREW_FILE}" ]];
+if [[ -z "${HOMEBREW_PREFIX}" || "${HOMEBREW_PREFIX}" = "${HOMEBREW_BREW_FILE}" ]]
 then
   HOMEBREW_PREFIX="/"
 fi
@@ -75,7 +76,8 @@ HOMEBREW_LIBRARY="${HOMEBREW_REPOSITORY}/Library"
 
 # Copy and export all HOMEBREW_* variables previously mentioned in
 # manpage or used elsewhere by Homebrew.
-for VAR in BROWSER DISPLAY EDITOR NO_COLOR PATH TMUX DBUS_SESSION_BUS_ADDRESS; do
+for VAR in BROWSER DISPLAY EDITOR NO_COLOR PATH TMUX DBUS_SESSION_BUS_ADDRESS
+do
   # Skip if variable value is empty.
   [[ -z "${!VAR}" ]] && continue
 
@@ -126,7 +128,8 @@ then
     GITHUB_ACTIONS_HOMEBREW_MACOS_SELF_HOSTED
   )
   # Filter all but the specific variables.
-  for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"; do
+  for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"
+  do
     # Skip if variable value is empty.
     [[ -z "${!VAR}" ]] && continue
 
