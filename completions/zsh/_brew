@@ -1593,6 +1593,7 @@ _brew_tap() {
     '--force-auto-update[Auto-update tap even if it is not hosted on GitHub. By default, only taps hosted on GitHub are auto-updated (for performance reasons)]' \
     '--help[Show this message]' \
     '--list-pinned[List all pinned taps]' \
+    '--no-force-auto-update[Auto-update tap even if it is not hosted on GitHub. By default, only taps hosted on GitHub are auto-updated (for performance reasons)]' \
     '--quiet[Make some output more quiet]' \
     '--repair[Migrate tapped formulae from symlink-based to directory-based structure]' \
     '--verbose[Make some output more verbose]' \
@@ -1802,6 +1803,7 @@ _brew_up() {
     '--help[Show this message]' \
     '--merge[Use `git merge` to apply updates (rather than `git rebase`)]' \
     '--preinstall[Run on auto-updates (e.g. before `brew install`). Skips some slower steps]' \
+    '--quiet[Make some output more quiet]' \
     '--verbose[Print the directories checked and `git` operations performed]'
 }
 
@@ -1813,6 +1815,7 @@ _brew_update() {
     '--help[Show this message]' \
     '--merge[Use `git merge` to apply updates (rather than `git rebase`)]' \
     '--preinstall[Run on auto-updates (e.g. before `brew install`). Skips some slower steps]' \
+    '--quiet[Make some output more quiet]' \
     '--verbose[Print the directories checked and `git` operations performed]'
 }
 
